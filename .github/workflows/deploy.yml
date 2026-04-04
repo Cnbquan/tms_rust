@@ -17,19 +17,22 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # 这一步是核心：在服务器里临时生成一个 Dockerfile，打包完就消失
+      - name: Create temporary Dockerfile
+        run: |
+          cat <<EOF > Dockerfile
+          FROM debian:bullseye-slim
+          RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+          WORKDIR /app
+          COPY tms_rust /app/tms_rust
+          RUN chmod +x /app/tms_rust
+          ENTRYPOINT ["/app/tms_rust"]
+          EOF
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          # 镜像会自动推送到 balamide/tms-rust:latest
           tags: ${{ secrets.DOCKER_USERNAME }}/tms-rust:latest
-          # 强制指定不使用本地 Dockerfile 文件，直接使用下方定义的内容
-          file: ""
-          inline-dockerfile: |
-            FROM debian:bullseye-slim
-            RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-            WORKDIR /app
-            COPY tms_rust /app/tms_rust
-            RUN chmod +x /app/tms_rust
-            ENTRYPOINT ["/app/tms_rust"]
+          # 这样它就能找到刚刚生成的那个 Dockerfile 了
