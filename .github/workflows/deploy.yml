@@ -23,7 +23,7 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/tms-rust:latest
-          # 修正方案：通过这里的 Dockerfile 指令直接生成镜像，无需物理文件
+          # 核心修正：使用这个参数直接定义内容
           file: ""
           inline-dockerfile: |
             FROM debian:bullseye-slim
