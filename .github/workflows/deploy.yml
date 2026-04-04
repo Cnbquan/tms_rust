@@ -22,8 +22,9 @@ jobs:
         with:
           context: .
           push: true
+          # 镜像会自动推送到 balamide/tms-rust:latest
           tags: ${{ secrets.DOCKER_USERNAME }}/tms-rust:latest
-          # 核心修正：使用这个参数直接定义内容
+          # 强制指定不使用本地 Dockerfile 文件，直接使用下方定义的内容
           file: ""
           inline-dockerfile: |
             FROM debian:bullseye-slim
