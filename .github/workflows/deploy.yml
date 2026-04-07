@@ -27,9 +27,9 @@ jobs:
               apt-get install -y --no-install-recommends ca-certificates libc6 libssl-dev && \
               rm -rf /var/lib/apt/lists/*
           WORKDIR /app
-          COPY tms_rust /app/tms_rust
-          RUN chmod +x /app/tms_rust
-          ENTRYPOINT ["/app/tms_rust"]
+          COPY smt_rust /app/smt_rust
+          RUN chmod +x /app/smt_rust
+          ENTRYPOINT ["/app/smt_rust"]
           EOF
 
       - name: Build and push
